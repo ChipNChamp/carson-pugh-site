@@ -10,10 +10,20 @@ const mime = {
   '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8'
 };
+const cleanRoutes = {
+  '/': 'about.html',
+  '/about': 'about.html',
+  '/math-physics': 'math-physics.html',
+  '/engineering': 'engineering.html',
+  '/culture': 'culture.html',
+  '/companies': 'companies.html',
+  '/individuals': 'individuals.html',
+  '/charts': 'charts.html'
+};
 
 http.createServer((req, res) => {
   const requestPath = decodeURIComponent((req.url || '/').split('?')[0]);
-  const relative = requestPath === '/' ? 'index.html' : requestPath.replace(/^\/+/, '');
+  const relative = cleanRoutes[requestPath] || requestPath.replace(/^\/+/, '');
   const file = path.resolve(root, relative);
   if (!file.startsWith(root + path.sep) && file !== root) {
     res.writeHead(403); return res.end('Forbidden');
