@@ -78,11 +78,11 @@ li { margin: 0 0 8px; }
   opacity: 0;
 }
 
-.cursor-label--link { color: #000; text-decoration: underline; text-underline-offset: 3px; }
+.cursor-label--link { color: #000; }
 
-.cursor-label--emoji {
-  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
-  font-size: 30px;
-  color: #000;
+.cursor-label--flag svg {
+  display: block;
+  width: 24px;
+  height: auto;
 }
 
