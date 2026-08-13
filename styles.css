@@ -60,7 +60,7 @@ li { margin: 0 0 8px; }
 /* Cursor replacement — hide the native pointer on fine-pointer devices
    and show a trailing label (word or emoji) instead. */
 @media (hover: hover) and (pointer: fine) {
-  body, body * { cursor: none; }
+  html, body, body * { cursor: none !important; }
 }
 
 .cursor-label {
@@ -75,7 +75,7 @@ li { margin: 0 0 8px; }
   font-size: 16px;
   line-height: 1;
   color: #999;
-  will-change: transform;
+  opacity: 0;
 }
 
 .cursor-label--link { color: #000; text-decoration: underline; text-underline-offset: 3px; }
