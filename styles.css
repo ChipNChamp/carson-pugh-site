@@ -56,3 +56,33 @@ li { margin: 0 0 8px; }
   .site-nav { display: none; }
   .site-shell { display: block; width: 100%; }
 }
+
+/* Cursor replacement — hide the native pointer on fine-pointer devices
+   and show a trailing label (word or emoji) instead. */
+@media (hover: hover) and (pointer: fine) {
+  body, body * { cursor: none; }
+}
+
+.cursor-label {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
+  line-height: 1;
+  color: #999;
+  will-change: transform;
+}
+
+.cursor-label--link { color: #000; text-decoration: underline; text-underline-offset: 3px; }
+
+.cursor-label--emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 30px;
+  color: #000;
+}
+
