@@ -57,12 +57,8 @@ li { margin: 0 0 8px; }
   .site-shell { display: block; width: 100%; }
 }
 
-/* Cursor replacement — hide the native pointer on fine-pointer devices
-   and show a trailing label (word or emoji) instead. */
-@media (hover: hover) and (pointer: fine) {
-  html, body, body * { cursor: none !important; }
-}
-
+/* Cursor replacement — a label pinned to the pointer. The native cursor is
+   hidden via inline <style> in each page's <head> (first-paint, no flash). */
 .cursor-label {
   position: fixed;
   top: 0;
@@ -75,7 +71,6 @@ li { margin: 0 0 8px; }
   font-size: 16px;
   line-height: 1;
   color: #999;
-  opacity: 0;
 }
 
 .cursor-label--link { color: #000; }
