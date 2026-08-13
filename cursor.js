@@ -34,9 +34,16 @@
     'translate3d(' + (window.innerWidth / 2) + 'px,' + (window.innerHeight / 2) + 'px,0) translate(-50%, -50%)';
 
   window.addEventListener('mousemove', function (e) {
+    label.style.opacity = '1';
     label.style.transform =
       'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0) translate(-50%, -50%)';
     var overLink = !!(e.target && e.target.closest && e.target.closest('a'));
     label.classList.toggle('cursor-label--link', overLink);
+  });
+
+  // Hide when the pointer leaves the window entirely, so the flag doesn't
+  // linger at the edge waiting for the cursor to return.
+  window.addEventListener('mouseout', function (e) {
+    if (!e.relatedTarget) label.style.opacity = '0';
   });
 })();
