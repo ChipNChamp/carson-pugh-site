@@ -40,6 +40,7 @@ ul { margin: 0 0 18px; padding-left: 22px; }
 li { margin: 0 0 8px; }
 .placeholder { color: var(--ink); font-style: normal; }
 .note { margin-bottom: 18px; }
+.chart { display: block; width: 100%; height: auto; }
 .site-footer { grid-column: 1; color: var(--ink); margin-top: 10px; }
 
 @media (max-width: 640px) {
