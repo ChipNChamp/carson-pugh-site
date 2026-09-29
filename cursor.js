@@ -33,17 +33,26 @@
   label.style.transform =
     'translate3d(' + (window.innerWidth / 2) + 'px,' + (window.innerHeight / 2) + 'px,0) translate(-50%, -50%)';
 
-  window.addEventListener('mousemove', function (e) {
-    label.style.opacity = '1';
-    label.style.transform =
-      'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0) translate(-50%, -50%)';
-    var overLink = !!(e.target && e.target.closest && e.target.closest('a'));
-    label.classList.toggle('cursor-label--link', overLink);
-  });
+  window.addEventListener('pointermove', function (e) {
+      label.style.opacity = '1';
+      label.style.transform =
+        'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0) translate(-50%, -50%)';
+      var overLink = !!(e.target && e.target.closest && e.target.closest('a'));
+      label.classList.toggle('cursor-label--link', overLink);
+    });
 
-  // Hide when the pointer leaves the window entirely, so the flag doesn't
-  // linger at the edge waiting for the cursor to return.
-  window.addEventListener('mouseout', function (e) {
-    if (!e.relatedTarget) label.style.opacity = '0';
-  });
+    // Re-show the flag on any pointer activity (click, drag-release, scroll) so a
+    // text-selection drag that captured the pointer can't leave it hung.
+    window.addEventListener('pointerdown', function () {
+      label.style.opacity = '1';
+    });
+    window.addEventListener('pointerup', function () {
+      label.style.opacity = '1';
+    });
+
+    // Hide when the pointer leaves the window entirely, so the flag doesn't
+        // linger at the edge waiting for the cursor to return.
+        window.addEventListener('mouseout', function (e) {
+          if (!e.relatedTarget) label.style.opacity = '0';
+        });
 })();
