@@ -41,6 +41,10 @@ li { margin: 0 0 8px; }
 .placeholder { color: var(--ink); font-style: normal; }
 .note { margin-bottom: 18px; }
 .chart { display: block; width: 100%; height: auto; }
+.chart-figure { margin: 0 0 30px; }
+.chart-figure img { display: block; width: 100%; height: auto; border: 1px solid #ddd; }
+.chart-caption { margin-top: 6px; font-size: 14px; color: var(--ink); }
+.chart-caption a, .chart-caption a:visited { color: var(--link); }
 .site-footer { grid-column: 1; color: var(--ink); margin-top: 10px; }
 
 @media (max-width: 640px) {
