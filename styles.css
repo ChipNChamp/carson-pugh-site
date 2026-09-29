@@ -45,6 +45,7 @@ li { margin: 0 0 8px; }
 .chart-figure img { display: block; width: 100%; height: auto; border: 1px solid #ddd; }
 .chart-caption { margin-top: 6px; font-size: 14px; color: var(--ink); }
 .chart-caption a, .chart-caption a:visited { color: var(--link); }
+.divider { border: none; border-top: 1px dashed #000; margin: 34px 0 20px; }
 .site-footer { grid-column: 1; color: var(--ink); margin-top: 10px; }
 
 @media (max-width: 640px) {
