@@ -50,7 +50,7 @@
 
   function leaveCheckedVis() {
     if (!hidden && typeof lastMoveTime === 'number' &&
-        (Date.now() - lastMoveTime > 250)) {
+        (Date.now() - lastMoveTime > 120)) {
       // The pointer has gone quiet for a quarter second — e.g. a highlight or
       // native menu has taken over and the page is no longer receiving move
       // events. Hide the flag rather than leave it frozen at its last spot.
