@@ -38,33 +38,21 @@
   // dropped, the flag keeps rendering at the last tracked location and updates
   // the instant a new event arrives.
   var lastX = window.innerWidth / 2, lastY = window.innerHeight / 2;
-  var lastMoveTime = 0;
   var hidden = false;
 
-  function place(x, y, t) {
-    lastX = x; lastY = y; lastMoveTime = t;
+  function place(x, y) {
+    lastX = x; lastY = y;
     if (hidden) { hidden = false; label.style.opacity = '1'; }
     label.style.transform =
       'translate3d(' + x + 'px,' + y + 'px,0) translate(-50%, -50%)';
   }
 
-  function leaveCheckedVis() {
-    if (!hidden && typeof lastMoveTime === 'number' &&
-        (Date.now() - lastMoveTime > 120)) {
-      // The pointer has gone quiet for a quarter second — e.g. a highlight or
-      // native menu has taken over and the page is no longer receiving move
-      // events. Hide the flag rather than leave it frozen at its last spot.
-      hidden = true;
-      label.style.opacity = '0';
-    } else if (hidden) {
-      label.style.opacity = '0';
-    }
-  }
-
+  // The rAF loop renders the flag every frame from the latest known pointer
+  // position. Visibility is driven purely by events (below), NOT by idle time:
+  // idling on the page keeps the flag; only a genuine exit hides it.
   var frame = function () {
     label.style.transform =
       'translate3d(' + lastX + 'px,' + lastY + 'px,0) translate(-50%, -50%)';
-    leaveCheckedVis();
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
@@ -74,7 +62,7 @@
   // text-selection drag — this is what keeps the flag engaged with the site.
   ['pointermove', 'mousemove'].forEach(function (type) {
     window.addEventListener(type, function (e) {
-      place(e.clientX, e.clientY, Date.now());
+      place(e.clientX, e.clientY);
       if (type === 'pointermove') {
         var overLink = !!(e.target && e.target.closest && e.target.closest('a'));
         label.classList.toggle('cursor-label--link', overLink);
@@ -90,6 +78,16 @@
       hidden = false;
     }, true);
   });
+
+  // Hide ONLY when the pointer genuinely leaves the page. A document-level
+  // mouseout/pointerout with relatedTarget === null fires exactly when the
+  // pointer exits the window (or a native menu takes over). Idling on the page
+  // never triggers this, so the flag stays put while the cursor rests.
+  function hideOnExit(e) {
+    if (!e.relatedTarget) { hidden = true; label.style.opacity = '0'; }
+  }
+  document.addEventListener('mouseout', hideOnExit, true);
+  document.addEventListener('pointerout', hideOnExit, true);
 
   // Suppress the native selection context menu (Copy / Search with Bing).
   // When that menu opens, the browser routes pointer events to the menu window
