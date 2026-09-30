@@ -33,26 +33,61 @@
   label.style.transform =
     'translate3d(' + (window.innerWidth / 2) + 'px,' + (window.innerHeight / 2) + 'px,0) translate(-50%, -50%)';
 
-  window.addEventListener('pointermove', function (e) {
-      label.style.opacity = '1';
-      label.style.transform =
-        'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0) translate(-50%, -50%)';
-      var overLink = !!(e.target && e.target.closest && e.target.closest('a'));
-      label.classList.toggle('cursor-label--link', overLink);
-    });
+  // Track the pointer on document in the CAPTURE phase so a text-selection
+  // drag or pointer capture can't swallow the move events.
+  var lastX = window.innerWidth / 2, lastY = window.innerHeight / 2;
 
-    // Re-show the flag on any pointer activity (click, drag-release, scroll) so a
-    // text-selection drag that captured the pointer can't leave it hung.
-    window.addEventListener('pointerdown', function () {
-      label.style.opacity = '1';
-    });
-    window.addEventListener('pointerup', function () {
-      label.style.opacity = '1';
-    });
+  function place(x, y) {
+    lastX = x; lastY = y;
+    label.style.opacity = '1';
+    label.style.transform =
+      'translate3d(' + x + 'px,' + y + 'px,0) translate(-50%, -50%)';
+  }
 
-    // Hide when the pointer leaves the window entirely, so the flag doesn't
-        // linger at the edge waiting for the cursor to return.
-        window.addEventListener('mouseout', function (e) {
-          if (!e.relatedTarget) label.style.opacity = '0';
-        });
+  // A rAF loop keeps the flag glued to the last known cursor position on every
+  // frame. Even if a pointermove is swallowed by a selection drag, the flag is
+  // never left frozen: the instant an event resumes, the loop reflects it, and
+  // any momentary miss self-heals on the next frame.
+  function frame() {
+    label.style.transform =
+      'translate3d(' + lastX + 'px,' + lastY + 'px,0) translate(-50%, -50%)';
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  document.addEventListener('pointermove', function (e) {
+    place(e.clientX, e.clientY);
+    var overLink = !!(e.target && e.target.closest && e.target.closest('a'));
+    label.classList.toggle('cursor-label--link', overLink);
+  }, true);
+
+  // Redundant safety net: some browsers dispatch mouse events on drag even
+  // when pointer events are retargeted to the selection.
+  document.addEventListener('mousemove', function (e) {
+    place(e.clientX, e.clientY);
+  }, true);
+
+  // Re-show and re-sync the instant a selection drag is released.
+  document.addEventListener('pointerup', function (e) {
+    place(e.clientX, e.clientY);
+  }, true);
+  document.addEventListener('click', function (e) {
+    place(e.clientX, e.clientY);
+  }, true);
+
+  // Hide only when the pointer genuinely leaves the viewport, tested by
+  // coordinates — NOT by relatedTarget === null, which fires spuriously during
+  // selection drags and is what used to hang the flag.
+  function inside(e) {
+    return e.clientX >= 0 && e.clientX <= window.innerWidth &&
+           e.clientY >= 0 && e.clientY <= window.innerHeight;
+  }
+  document.documentElement.addEventListener('pointerout', function (e) {
+    if (e.relatedTarget) return;
+    if (!inside(e)) label.style.opacity = '0';
+  }, true);
+  document.documentElement.addEventListener('mouseout', function (e) {
+    if (e.relatedTarget) return;
+    if (!inside(e)) label.style.opacity = '0';
+  }, true);
 })();
