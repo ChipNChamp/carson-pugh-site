@@ -51,11 +51,11 @@
   function leaveCheckedVis() {
     if (!hidden && typeof lastMoveTime === 'number' &&
         (Date.now() - lastMoveTime > 250)) {
-      // The pointer has gone quiet for a quarter second. Decide by geometry:
-      // hide only if it has genuinely left the viewport bounds, else keep it.
-      var inside = lastX >= 0 && lastX <= window.innerWidth &&
-                   lastY >= 0 && lastY <= window.innerHeight;
-      label.style.opacity = inside ? '1' : '0';
+      // The pointer has gone quiet for a quarter second — e.g. a highlight or
+      // native menu has taken over and the page is no longer receiving move
+      // events. Hide the flag rather than leave it frozen at its last spot.
+      hidden = true;
+      label.style.opacity = '0';
     } else if (hidden) {
       label.style.opacity = '0';
     }
