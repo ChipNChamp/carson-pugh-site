@@ -90,4 +90,12 @@
       hidden = false;
     }, true);
   });
+
+  // Suppress the native selection context menu (Copy / Search with Bing).
+  // When that menu opens, the browser routes pointer events to the menu window
+  // and the page stops receiving them — which is what freezes the flag after a
+  // text selection. Blocking it keeps the pointer engaged with the page.
+  window.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+  }, true);
 })();
